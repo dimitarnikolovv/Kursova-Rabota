@@ -6,6 +6,8 @@
     import Filter from 'bad-words';
     import { groupes } from '../stores/group';
 
+    let outerHeight;
+
     const unsubscribe = db
         .collection('messages')
         .orderBy('createdAt')
@@ -34,8 +36,7 @@
         if (user === null) goto('/');
     }
 
-    function messageSubmit(e) {
-        if (e.key.toLowerCase() !== 'enter') return;
+    function submitMessage() {
         if (cooldown) return;
 
         const message = new Filter().clean((value || '').trim());
@@ -56,6 +57,11 @@
         });
     }
 
+    function messageSubmitEnter(e) {
+        if (e.key.toLowerCase() !== 'enter') return;
+        submitMessage();
+    }
+
     function logout() {
         if (auth.currentUser) {
             auth.signOut()
@@ -69,13 +75,25 @@
     onDestroy(unsubscribe);
 </script>
 
+<svelte:window bind:outerHeight />
+
+<svelte:head>
+    {#if outerHeight < 628}
+        <style>
+            body {
+                overflow: auto;
+            }
+        </style>
+    {/if}
+</svelte:head>
+
 <div class="wrapper">
     {#if typeof user === 'undefined'}
         <p><i /> Loading</p>
     {:else if user}
-        <button class="log-out" on:click={logout}>Log Out</button>
+        <button class="control log-out" on:click={logout}>Log Out</button>
         <button
-            class="groups"
+            class="control groups"
             on:click={() => {
                 goto('/group');
             }}>Groups</button
@@ -94,14 +112,16 @@
                 <br id="scroll-to" />
             </div>
         </div>
-        <textarea
-            on:keydown={messageSubmit}
-            bind:value
-            type="text"
-            class:cooldown
-            placeholder={cooldown ? '3 second cooldown' : 'Enter message and press enter'}
-        />
-        <br />
+        <div class="form-wrap">
+            <textarea
+                on:keydown={messageSubmitEnter}
+                bind:value
+                type="text"
+                class:cooldown
+                placeholder={cooldown ? '3 second cooldown' : 'Enter message and press enter'}
+            />
+            <button type="button" class="send" on:click={submitMessage}>Send</button>
+        </div>
     {:else}
         <p>Not logged in!</p>
     {/if}
@@ -136,19 +156,29 @@
         background-color: lightcoral;
     }
 
-    textarea {
-        resize: none;
+    .form-wrap {
         height: fit-content;
+        display: flex;
         margin: 0 auto;
         width: 60%;
         margin-top: 0.8rem;
+
+        textarea {
+            resize: none;
+            height: 100%;
+            width: 100%;
+        }
+
+        button.send {
+            max-height: unset;
+        }
 
         @media only screen and (max-width: 1024px) {
             width: 95%;
         }
     }
 
-    button {
+    button.control {
         position: fixed;
         width: fit-content;
         &.log-out {
