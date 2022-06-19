@@ -15,7 +15,9 @@
         "bad-words": "^3.0.4",
         "firebase": "^9.8.3",
         "md5": "^2.3.0",
-        "svelte": "^3.44.0"
+        "sass": "^1.52.3",
+        "svelte": "^3.44.0",
+        "svelte-preprocess": "^4.10.7"
     },
     "type": "module"
 }

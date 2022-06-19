@@ -17,9 +17,7 @@
         goto('/');
     }
 
-    function groupSubmit(e) {
-        if (e.key.toLowerCase() !== 'enter') return;
-
+    function submitGroup() {
         let group = new Filter().clean(value || '').trim();
 
         if (!group) return;
@@ -39,14 +37,38 @@
             goto('/chat');
         }, 200);
     }
+
+    function groupSubmitonEnter(e) {
+        if (e.key.toLowerCase() !== 'enter') return;
+        submitGroup();
+    }
 </script>
 
-<h1 class="w3-jumbo w3-center">Choose or create group</h1>
+<div class="wrapper">
+    <h1>Choose or create group</h1>
 
-<input
-    on:keydown={groupSubmit}
-    bind:value
-    type="text"
-    style="margin: 0 auto; width: 60%; margin-top: -1px"
-    class="w3-input w3-border w3-border-gray"
-/>
+    <input
+        on:keydown={groupSubmitonEnter}
+        bind:value
+        type="text"
+        style="margin: 0 auto; width: 60%; margin-top: -1px"
+    />
+
+    <button type="button" on:click={submitGroup}>Enter Group</button>
+</div>
+
+<style lang="scss">
+    .wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+
+        button {
+            padding-inline: 1.2em;
+            &:hover {
+                background-color: lightgray;
+            }
+        }
+    }
+</style>
