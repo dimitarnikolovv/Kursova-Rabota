@@ -95,7 +95,7 @@
     });
 </script>
 
-<div style="width: 40%; margin: 1rem auto">
+<div class="wrap">
     {#if !isAuthenticated}
         <div>
             <h2>
@@ -169,7 +169,7 @@
                 </form>
             {/if}
             <hr />
-            <button style="width: 100%" on:click={google}><i /> Sign in with Google</button>
+            <button on:click={google} style="align-self: center;"><i /> Sign in with Google</button>
         </div>
     {:else}
         <div>
@@ -179,13 +179,21 @@
             <div><i /></div>
             <div>Logged in</div>
             <div>
-                <button style="width: 100%" on:click={logout}>Log out</button>
+                <button on:click={logout}>Log out</button>
             </div>
         </div>
     {/if}
 </div>
 
 <style lang="scss">
+    .wrap {
+        width: 40%;
+        margin: 1rem auto;
+
+        @media only screen and (max-width: 1024px) {
+            width: 95%;
+        }
+    }
     h2 {
         text-align: center;
     }
